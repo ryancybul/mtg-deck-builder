@@ -99,5 +99,6 @@ const PageWrapper = styled.div`
   }
   li {
     list-style-type: none;
+    z-index: 1;
   }
 `;
