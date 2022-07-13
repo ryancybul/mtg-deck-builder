@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 
@@ -21,33 +22,33 @@ function CardSearch(props) {
   }, [searchVal]);
 
   const searchCardOptions = async (searchVal) => {
-    const response = await fetch(
-      `https://api.scryfall.com/cards/autocomplete?q=${searchVal}`
-    );
-    const data = await response.json();
-    await setOptions(data);
+    try {
+      const res = await axios.get(
+        `https://api.scryfall.com/cards/autocomplete?q=${searchVal}`
+      );
+      const data = await res.data;
+      await setOptions(data);
+    } catch {
+      console.log(`Error: ${err.message}`);
+    }
   };
 
   // Sets search value in input from suggestions list
-  const suggestionSelected = (item) => {
-    setSearch(item);
-    setOptionsVisible(false);
-    setOptions({});
+  const suggestionSelected = async (item) => {
+    await setSearch(item);
+    await setOptionsVisible(false);
+    await setOptions({});
   };
 
   // Searches scryfall api for individual card
   const searchCard = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(
-        `https://api.scryfall.com/cards/named?exact=${searchVal}&pretty=true`
+      const res = await axios.get(
+        // `https://api.scryfall.com/cards/named?exact=${searchVal}&pretty=true`
+        `https://api.scryfall.com/cards/search?q=${searchVal}&pretty=true`
       );
-      if (!response.ok) {
-        const message = `An error has occured: ${response.status}`;
-        alert(`${searchVal} was not found.`);
-        throw new Error(message);
-      }
-      const data = await response.json();
+      const data = await res.data;
       await props.setCards(data);
       setSearch("");
       setOptionsVisible(false);
@@ -73,7 +74,13 @@ function CardSearch(props) {
         {options.data && optionsVisible
           ? options.data.map((item) => (
               <li key={item}>
-                <button onClick={() => suggestionSelected(item)}>{item}</button>
+                <span
+                  onClick={async () => {
+                    suggestionSelected(item);
+                  }}
+                >
+                  {item}
+                </span>
               </li>
             ))
           : null}
