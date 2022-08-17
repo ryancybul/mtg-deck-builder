@@ -63,7 +63,7 @@ const CardWrapper = styled.div`
 const DualCard = styled.div`
   position: relative;
   width: 312px;
-  height: 438px;
+  height: 475px;
 
   .card {
     position: absolute;

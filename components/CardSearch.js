@@ -42,10 +42,10 @@ function CardSearch(props) {
 
   // Searches scryfall api for individual card
   const searchCard = async (e) => {
+    props.setCards(null);
     e.preventDefault();
     try {
       const res = await axios.get(
-        // `https://api.scryfall.com/cards/named?exact=${searchVal}&pretty=true`
         `https://api.scryfall.com/cards/search?q=${searchVal}&pretty=true`
       );
       const data = await res.data;
@@ -64,7 +64,7 @@ function CardSearch(props) {
           value={searchVal}
           onChange={onTextChange}
           type="text"
-          placeholder="Search.."
+          placeholder="Search for a card..."
         />
         <button type="submit" value="Submit" onClick={searchCard}>
           Search
@@ -76,11 +76,13 @@ function CardSearch(props) {
               <li key={item}>
                 <span
                   onClick={async () => {
-                    suggestionSelected(item);
+                    await suggestionSelected(item);
+                    searchCard;
                   }}
                 >
                   {item}
                 </span>
+                <hr></hr>
               </li>
             ))
           : null}
@@ -95,18 +97,32 @@ const SearchWrapper = styled.div`
   form {
     margin: 0;
   }
-
+  button {
+    border-radius: 0;
+    :hover {
+      cursor: pointer;
+    }
+  }
   ul {
     margin: 0;
     position: absolute;
     z-index: 1;
     padding: 0;
+    width: auto;
   }
   li {
     list-style-type: none;
-    button {
-      border-radius: 0;
-      width: 100%;
+    margin: 0 2px 0 0;
+    padding: 12px;
+    background-color: white;
+    :hover {
+      cursor: pointer;
+    }
+    hr {
+      border: 0;
+      height: 1px;
+      background: #333;
+      background-image: linear-gradient(to right, #ccc, #333, #ccc);
     }
   }
 `;
