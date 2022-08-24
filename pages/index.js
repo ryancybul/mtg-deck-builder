@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <PageWrapper>
       <Head>
-        <title>Card Search</title>
+        <title>MTG Card Search</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SearchStyles>
@@ -97,8 +97,7 @@ const SearchStyles = styled.div`
   grid-template-columns: 1fr 1fr 1fr;
   justify-content: center;
   margin-bottom: 20px;
-  padding-bottom: 20px;
-  padding: 20px;
+  padding: 0 20px;
   div {
     padding: 10px;
     justify-self: center;

@@ -16,4 +16,5 @@ const HeaderStyles = styled.div`
   h1 {
     color: white;
   }
+  height: 100px;
 `;
