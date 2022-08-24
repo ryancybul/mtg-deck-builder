@@ -58,6 +58,9 @@ export default Card;
 
 const CardWrapper = styled.div`
   display: block;
+  img {
+    border-radius: 4%;
+  }
 `;
 
 const DualCard = styled.div`
@@ -81,6 +84,7 @@ const DualCard = styled.div`
 
   .card .front,
   .card .back {
+    border-radius: 15%;
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -64,7 +64,7 @@ function CardSearch(props) {
           value={searchVal}
           onChange={onTextChange}
           type="text"
-          placeholder="Search for a card..."
+          placeholder="Search for cards..."
         />
         <button type="submit" value="Submit" onClick={searchCard}>
           Search
@@ -95,10 +95,20 @@ export default CardSearch;
 
 const SearchWrapper = styled.div`
   form {
+    display: flex;
     margin: 0;
+    width: 350px;
+  }
+  input {
+    flex: 1;
+    border-radius: 5px;
+    height: 38px;
+    margin-right: 5px;
   }
   button {
-    border-radius: 0;
+    flex: 0.25;
+    border-radius: 5px;
+    height: 38px;
     :hover {
       cursor: pointer;
     }

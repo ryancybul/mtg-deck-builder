@@ -4,13 +4,14 @@ import Card from "../components/Card";
 import CardSearch from "../components/CardSearch";
 import SetsSearch from "../components/SetsSearch";
 import Pagination from "../components/Pagination";
+import ManaFilter from "../components/ManaFilter";
 import styled from "styled-components";
 
 export default function Home() {
   const [cards, setCards] = useState(null);
+  const [filteredCards, setFilteredCards] = useState(null);
   const [pagUrls, setPagUrls] = useState([]);
-  console.log({ cards });
-  console.log({ pagUrls });
+  const [checkedMana, setCheckedMana] = useState({});
 
   return (
     <PageWrapper>
@@ -19,11 +20,40 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SearchStyles>
-        <SetsSearch setCards={setCards} setPagUrls={setPagUrls} />
-        <CardSearch setCards={setCards} />
+        <SetsSearch
+          setCards={setCards}
+          setPagUrls={setPagUrls}
+          setFilteredCards={setFilteredCards}
+        />
+        <ManaFilter
+          setCards={setCards}
+          cards={cards}
+          checkedMana={checkedMana}
+          setCheckedMana={setCheckedMana}
+          setFilteredCards={setFilteredCards}
+        />
+        <CardSearch
+          setCards={setCards}
+          setCheckedMana={setCheckedMana}
+          checkedMana={checkedMana}
+        />
       </SearchStyles>
       <CardsWrapper>
-        {cards && cards.data.map((card) => <Card card={card} key={card.id} />)}
+        {filteredCards && Object.values(checkedMana).includes(true)
+          ? [
+              filteredCards.data.length === 0 ? (
+                <p>
+                  No results: <br />
+                  Clear filters or check the Next / Prev page
+                </p>
+              ) : (
+                filteredCards.data.map((card) => (
+                  <Card card={card} key={card.id} />
+                ))
+              ),
+            ]
+          : cards &&
+            cards.data.map((card) => <Card card={card} key={card.id} />)}
       </CardsWrapper>
       {cards !== null && cards && pagUrls.length >= 1 ? (
         <Pagination
@@ -53,22 +83,27 @@ const CardsWrapper = styled.div`
   flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
+
+  p {
+    text-align: center;
+    color: white;
+    font-size: 1.5rem;
+  }
 `;
 
 const SearchStyles = styled.div`
-  background: rgb(2, 0, 36);
-  background: linear-gradient(
-    90deg,
-    rgba(2, 0, 36, 1) 0%,
-    rgba(109, 69, 171, 1) 50%,
-    rgba(5, 80, 96, 1) 100%
-  );
   width: 100%;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   justify-content: center;
   margin-bottom: 20px;
   padding-bottom: 20px;
   div {
     padding: 10px;
+    justify-self: center;
+  }
+
+  @media only screen and (max-width: 850px) {
+    grid-template-columns: 1fr;
   }
 `;

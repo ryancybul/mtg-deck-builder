@@ -1,10 +1,50 @@
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
+import Select, { components } from "react-select";
+
+//React select add image to icon
+const { Option, SingleValue } = components;
+const IconOption = (props) => (
+  <Option {...props}>
+    <img
+      src={props.data.icon}
+      style={{ width: 20, marginRight: 10 }}
+      alt={props.data.label}
+    />
+    {props.data.label}
+  </Option>
+);
+
+const ValueOption = (props) => (
+  <SingleValue {...props}>
+    <img
+      src={props.data.icon}
+      style={{ width: 20, marginRight: 10 }}
+      alt={props.data.label}
+    />
+    {props.data.label}
+  </SingleValue>
+);
+
+//React select custom styles
+const customStyles = {
+  option: (provided, state) => ({
+    ...provided,
+    borderBottom: "1px solid black",
+    margin: 20,
+    cursor: "pointer",
+  }),
+  singleValue: (provided, state) => {
+    const opacity = state.isDisabled ? 0.5 : 1;
+    const transition = "opacity 300ms";
+    return { ...provided, opacity, transition };
+  },
+};
 
 function SetsSearch(props) {
   const [selectedSet, setSelected] = useState("");
   const [options, setOptions] = useState([]);
+  const [selectOptions, setSelectOptions] = useState([]);
   const [isFirstRender, setFirstRender] = useState();
 
   //On page mount get all core & expansion set objects from api
@@ -21,6 +61,11 @@ function SetsSearch(props) {
         }
       });
       setOptions(coreSets);
+      setSelectOptions(
+        coreSets.map((set) => {
+          return { value: set.name, label: set.name, icon: set.icon_svg_uri };
+        })
+      );
       setSelected(coreSets[0].name);
       setFirstRender(true);
     } catch (err) {
@@ -44,18 +89,16 @@ function SetsSearch(props) {
 
   //When set is selected display all cards in set
   const getSetData = async (setName) => {
-    //Clear out previous data
-    // props.setCards(null);
-    // Todo: clear out pagUrls when new set is selected
+    //Clear out previous filtered data data
+    props.setFilteredCards(null);
+    // Clear out pagUrls when new set is selected
     props.setPagUrls([]);
     //Search options for selected Set
     let setObject = await options.find((set) => set.name === setName);
-    // console.log({ setObject });
     try {
       const res = await axios.get(setObject.search_uri);
       const data = await res.data;
       await props.setCards(data);
-      // console.log({ data });
       await pushPageUrl(data);
     } catch (err) {
       console.log(`Error: ${err.message}`);
@@ -63,47 +106,22 @@ function SetsSearch(props) {
   };
 
   //Changes the set name after it's been selected.
-  const setSet = (e) => {
-    const setName = e.target.value;
+  const setSet = (value) => {
+    const setName = value.value;
     setSelected(setName);
     getSetData(setName);
   };
 
   return (
-    <SearchWrapper>
-      <select value={selectedSet} id="selectSet" onChange={setSet}>
-        {options.map((set, i) => {
-          if (set.card_count > 0) {
-            return (
-              <option key={i} value={set.name}>
-                {set.name}
-              </option>
-            );
-          }
-        })}
-      </select>
-    </SearchWrapper>
+    <Select
+      styles={customStyles}
+      id="selectSet"
+      onChange={setSet}
+      placeholder="Select a set..."
+      options={selectOptions}
+      components={{ Option: IconOption, SingleValue: ValueOption }}
+    ></Select>
   );
 }
 
 export default SetsSearch;
-
-const SearchWrapper = styled.div`
-  form {
-    margin: 0;
-  }
-
-  ul {
-    margin: 0;
-    position: absolute;
-    z-index: 1;
-    padding: 0;
-  }
-  li {
-    list-style-type: none;
-    button {
-      border-radius: 0;
-      width: 100%;
-    }
-  }
-`;

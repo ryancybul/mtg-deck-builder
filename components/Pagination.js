@@ -1,9 +1,10 @@
-import styled from "styled-components";
 import { useState } from "react";
 import axios from "axios";
+import { useScrollTo } from "react-use-window-scroll";
 
 function Pagination(props) {
   const [count, setCount] = useState(0);
+  const scrollTo = useScrollTo();
 
   const pushPageUrl = (cardsObj) => {
     props.setPagUrls((pagUrls) => [...pagUrls, cardsObj]);
@@ -12,13 +13,11 @@ function Pagination(props) {
   const incrementCount = async () => {
     // Update state with incremented value
     setCount(count + 1);
-    console.log({ count });
   };
 
   const decrementCount = () => {
     // Update state with incremented value
     setCount(count - 1);
-    console.log({ count });
   };
 
   const nextCards = async () => {
@@ -36,21 +35,29 @@ function Pagination(props) {
   const prevCards = () => {
     decrementCount();
     const data = props.pagUrls[count - 1];
-    console.log({ data });
     props.setCards(data);
   };
 
   return (
-    <nav>
-      <button onClick={prevCards} disabled={count === 0 ? true : false}>
+    <nav className="pagination">
+      <button
+        onClick={async () => {
+          await prevCards();
+          await scrollTo({ top: 0, left: 0, behavior: "smooth" });
+        }}
+        disabled={count === 0 ? true : false}
+      >
         {" "}
-        ← Prev
+        ← Prev Page
       </button>
       <button
-        onClick={nextCards}
+        onClick={async () => {
+          await nextCards();
+          await scrollTo({ top: 0, left: 0, behavior: "smooth" });
+        }}
         disabled={!("next_page" in props.cards) ? true : false}
       >
-        Next →
+        Next Page →
       </button>
     </nav>
   );
