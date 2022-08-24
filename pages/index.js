@@ -98,12 +98,13 @@ const SearchStyles = styled.div`
   justify-content: center;
   margin-bottom: 20px;
   padding-bottom: 20px;
+  padding: 20px;
   div {
     padding: 10px;
     justify-self: center;
   }
 
-  @media only screen and (max-width: 850px) {
+  @media only screen and (max-width: 950px) {
     grid-template-columns: 1fr;
   }
 `;
