@@ -14,7 +14,7 @@ export default Header;
 
 const HeaderStyles = styled.div`
   h1 {
+    text-align: center;
     color: white;
   }
-  height: 100px;
 `;
