@@ -2,7 +2,7 @@ import("next").NextConfig;
 
 const nextConfig = {
   images: {
-    domains: ["c1.scryfall.com"],
+    domains: ["cards.scryfall.io", "api.scryfall.com"],
   },
 };
 
